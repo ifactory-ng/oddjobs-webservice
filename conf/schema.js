@@ -33,8 +33,6 @@ var User = new Schema({
 	name: String,
 	about: String,
 	contacts: [Contacts],
-	shop: String,
-	shop_id: String
 	});
 	
 	var Product = new Schema({

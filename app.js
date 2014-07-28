@@ -91,10 +91,9 @@ app.get('/profile', ensureAuthenticated, function(req, res){
 });
 
 app.get('/profile/:id', api.user);
-app.put('/profile/:id', api.infoUpdate);
-app.put('/profile/shop/create/:id');
-//shop section
-app.post('/addProduct');
+app.put('/profile/update/about', api.about);
+app.put('/profile/shop/create', api.createShop);
+app.post('/shop/addProduct/');
 
 function ensureAuthenticated(req, res, next){
 	if (req.isAuthenticated()) { return next(); }

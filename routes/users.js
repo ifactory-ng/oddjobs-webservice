@@ -12,9 +12,9 @@ exports.user = function(req, res){
 	
 };
 
-exports.infoUpdate = function(req, res){
-	var obj = req.body;
-	User.findByIdAndUpdate(req.params.id, {
+exports.about = function(req, res){
+	var obj = req.body.about;
+	User.findByIdAndUpdate(req.session.passport.user, {
 		$set: obj
 	}, function(err, obj){
 		if(err){
@@ -27,10 +27,10 @@ exports.infoUpdate = function(req, res){
 );
 };
 
+
 exports.createShop = function(req, res){
 	var data = req.body.shopName;
 	Shop.shop_name = data;
 	Shop.owner_id = req.session.passport.user;
 	Shop.save;
-	
-};
+	};
