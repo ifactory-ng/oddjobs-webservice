@@ -13,7 +13,8 @@
     "body-parser": "~1.0.0",
     "debug": "~0.7.4",
     "mongodb": "*",
-    "mongoose": "",
+    "mongoose": "*",
+    "passport": "*",
     "jade": "~1.3.0"
   },
   "description": "api for oddjobs clients",
@@ -26,6 +27,6 @@
   "keywords": [
     "oddjobs"
   ],
-  "author": "smile",
+  "author": "smile & anthony",
   "license": "null"
 }

@@ -8,6 +8,7 @@ var schema = require('./conf/schema');
 //var routes = require('./routes/users');
 var api = require('./routes/users');
 var passport = require('passport');
+var FacebookStrategy = require('passport-facebook').Strategy;
 var config = require('./conf/auth');
 
 passport.serializeUser(function(user, done) {
@@ -19,7 +20,7 @@ done(null, obj);
 var User = schema.userModel;
 
 // config
-/*passport.use(new FacebookStrategy({
+passport.use(new FacebookStrategy({
 clientID: config.facebook.clientID,
 clientSecret: config.facebook.clientSecret,
 callbackURL: config.facebook.callbackURL
@@ -49,7 +50,7 @@ if (!err && user !== null) {
 });
 }
 ));
-*/
+
 var app = express();
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
@@ -65,7 +66,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 //routing
 
-/*app.get('/auth/facebook',
+app.get('/auth/facebook',
 passport.authenticate('facebook',
 {scope: 'email'}));
 
@@ -75,7 +76,7 @@ function(req, res){
 	res.redirect('/profile');
 }
 );
-*/
+
 //profile section
 app.get('/profile', ensureAuthenticated, function(req, res){
 	User.findById(req.session.passport.user, function(err, user){
