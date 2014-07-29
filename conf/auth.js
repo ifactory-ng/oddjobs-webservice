@@ -1,7 +1,7 @@
 var ids = {
 facebook: {
- clientID: '',
- clientSecret: '',
+ clientID: 'empty',
+ clientSecret: 'empty',
  callbackURL: 'http://127.0.0.1:1337/auth/facebook/callback'
 },
 twitter: {
@@ -13,4 +13,6 @@ google: {
  returnURL: 'http://127.0.0.1:1337/auth/google/callback',
  realm: 'http://127.0.0.1:1337'
 }
-}
+};
+
+module.exports = ids;
