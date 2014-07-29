@@ -5,7 +5,7 @@ var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 var schema = require('./conf/schema');
-//var routes = require('./routes/users');
+var routes = require('./routes/index');
 var api = require('./routes/users');
 var passport = require('passport');
 var FacebookStrategy = require('passport-facebook').Strategy;
@@ -63,13 +63,14 @@ app.use(cookieParser());
 app.use(passport.initialize());
 app.use(passport.session());
 app.use(express.static(path.join(__dirname, 'public')));
-
+app.use('/', routes);
 //routing
 
 app.get('/auth/facebook',
 passport.authenticate('facebook',
 {scope: 'email'}));
 
+app.listen(process.env.PORT || 3000); 
 app.get('auth/facebook/callback',
 passport.authenticate('facebook', {failureRedirect: '/error'}),
 function(req, res){
@@ -110,7 +111,7 @@ app.use(function(req, res, next) {
 
 // development error handler
 // will print stacktrace
-if (app.get('env') === 'development') {
+if (app.get('env') === 'development' || 'production') {
     app.use(function(err, req, res, next) {
         res.status(err.status || 500);
         res.render('error', {
