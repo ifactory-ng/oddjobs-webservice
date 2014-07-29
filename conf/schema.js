@@ -1,5 +1,5 @@
 var mongoose = require('mongoose');
-var mongodbURL = 'mongodb://localhost/oddjobs';
+var mongodbURL = process.env.MONGOLAB_URI || process.env.MONGOHQ_URL || 'mongodb://localhost/oddjobs';
 var mongodbOptions = {};
 
 mongoose.connect(mongodbURL, mongodbOptions, function (err, res){
