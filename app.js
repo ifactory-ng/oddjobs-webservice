@@ -68,16 +68,14 @@ app.use('/', routes);
 
 app.get('/auth/facebook',
 passport.authenticate('facebook',
-{scope: 'email'}));
+{scope: 'email'}), function(req, res){  
+});
 
 app.listen(process.env.PORT || 3000); 
 app.get('auth/facebook/callback',
-passport.authenticate('facebook', {failureRedirect: '/error'}),
-function(req, res){
-	res.redirect('/profile');
-}
-);
-
+passport.authenticate('facebook', {
+  successRedirect: '/profile',
+  failureRedirect: '/error'}));
 //profile section
 app.get('/profile/:id?', ensureAuthenticated, function(req, res){
 	User.findById(req.session.passport.user, function(err, user){
