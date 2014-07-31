@@ -2,7 +2,7 @@ var ids = {
 facebook: {
  clientID: '747991285264118',
  clientSecret: '6b60a8afffd172af54aedf3904a5d28b',
- callbackURL: 'http://127.0.0.1:1337/auth/facebook/callback'
+ callbackURL: 'http://oddjobs.herokuapp.com/auth/facebook/callback'
 },
 twitter: {
  consumerKey: '',

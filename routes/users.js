@@ -1,7 +1,7 @@
 var schema = require('../conf/schema');
 var User = schema.userModel;
 var Shop = schema.shopModel;
-exports.user = function(req, res){
+/*exports.user = function(req, res){
 	var id = req.params.id;
 	User.findOne({authid: id}, function(err, user){
 		if (err){
@@ -10,7 +10,7 @@ exports.user = function(req, res){
 		res.json(200, user);
 	});
 	
-};
+};*/
 
 exports.about = function(req, res){
 	var obj = req.body.about;

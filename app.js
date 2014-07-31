@@ -18,7 +18,7 @@ passport.deserializeUser(function(obj, done) {
 done(null, obj);
 });
 var User = schema.userModel;
-
+var user = '';
 // config
 passport.use(new FacebookStrategy({
 clientID: config.facebook.clientID,
@@ -79,26 +79,32 @@ function(req, res){
 );
 
 //profile section
-app.get('/profile', ensureAuthenticated, function(req, res){
-	User.findById(req.session.passport.user, function(err, user){
+app.get('/profile/:id?', ensureAuthenticated, function(req, res){
+  
+/*  if(req.session.passport.user){
+user = req.session.passport.user;
+  }
+  else{
+    user = req.user.id
+  }
+  */
+  User.findById(user, function(err, user){
 		if(err) {
 			console.log(err);
-			res.json(401);
+			res.send(500);
 		}
-		else{
 			res.json(200, user);
-		}
 	});
 });
 
-app.get('/profile/:id', api.user);
+//app.get('/profile/:id', api.user);
 app.put('/profile/update/about', api.about);
-app.post('/profile/shop/create', api.createShop);
+app.post('/profile/create/shop/:id', api.createShop);
 app.post('/shop/addProduct/');
 
 function ensureAuthenticated(req, res, next){
 	if (req.isAuthenticated()) { return next(); }
-	res.redirect('/');
+	res.send(500);
 }
 /// catch 404 and forward to error handler
 app.use(function(req, res, next) {
