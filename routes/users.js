@@ -11,11 +11,25 @@ var Shop = schema.shopModel;
 	});
 	
 };*/
-
+function switcher(){
+	if(req.session.passport.user){
+		return req.session.passport.user;
+	}
+	else{
+		return req.user.authId;
+	}
+}
 exports.about = function(req, res){
 	var obj = req.body.about;
-	User.findByIdAndUpdate(req.session.passport.user, {
-		$set: obj
+	var userid;
+	if(req.session.passport.user){
+		userid = req.session.passport.user;
+	}
+	else{
+		userid = req.user.authId;
+	}
+	User.update({authId:userid}, {
+		about: obj
 	}, function(err, obj){
 		if(err){
 			console.log("bad credentials");
@@ -34,3 +48,8 @@ exports.createShop = function(req, res){
 	Shop.owner_id = req.session.passport.user;
 	Shop.save;
 	};
+
+exports.addProduct = function(req, res){
+	var user = switcher;
+	Shop.update({owner_id:user}, {})
+}
