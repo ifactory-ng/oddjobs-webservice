@@ -45,11 +45,12 @@ exports.about = function(req, res){
 exports.createShop = function(req, res){
 	var data = req.body.shopName;
 	Shop.shop_name = data;
-	Shop.owner_id = req.session.passport.user;
+	Shop.owner_id = switcher;
 	Shop.save;
 	};
 
 exports.addProduct = function(req, res){
 	var user = switcher;
-	Shop.update({owner_id:user}, {})
-}
+	Shop.update({owner_id:user}, {$push: { product: [ {tag_name: req.body.tag}, {description: req.body.desc}, {category: req.body.category}, {price: req.body.price} ] } });
+};
+

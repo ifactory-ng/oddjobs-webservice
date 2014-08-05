@@ -65,7 +65,7 @@ app.use(passport.session());
 app.use(express.static(path.join(__dirname, 'public')));
 //routing
 
-app.param('id', function(req, res, next, id){
+app.param('user_id', function(req, res, next, id){
 	User.find({authId:id}, function(err, user){
 		if(err) return next(err);
 		if(!user) return next(new Error('failed to find user'));
@@ -84,7 +84,7 @@ passport.authenticate('facebook', {
   successRedirect: '/profile',
   failureRedirect: '/error'}));
 //profile section
-app.get('/profile/:id?', function(req, res){
+app.get('/profile/:user_id?', function(req, res){
 	if(!req.params.id){
 	User.find({authId:req.session.passport.user}, function(err, user){
 		if(err) {
@@ -100,8 +100,8 @@ app.get('/profile/:id?', function(req, res){
 });
 //app.get('/profile/:id', api.user);
 app.put('/profile/update/about', api.about);
-app.post('/profile/create/shop/:id', api.createShop);
-app.post('/shop/addProduct/');
+app.post('/profile/create/shop/:user_id?', api.createShop);
+app.post('/profile/shop/addProduct/:user_id?', api.addProduct);
 
 /*function ensureAuthenticated(req, res, next){
 	if (req.isAuthenticated()) { return next(); }
