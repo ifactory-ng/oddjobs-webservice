@@ -100,6 +100,7 @@ app.get('/profile/:user_id?', function(req, res){
 });
 //app.get('/profile/:id', api.user);
 app.put('/profile/update/about', api.about);
+app.put('/profile/edit/contact_info/:user_id?', api.contactInfo);
 app.post('/profile/create/shop/:user_id?', api.createShop);
 app.post('/profile/shop/addProduct/:user_id?', api.addProduct);
 

@@ -54,3 +54,7 @@ exports.addProduct = function(req, res){
 	Shop.update({owner_id:user}, {$push: { product: [ {tag_name: req.body.tag}, {description: req.body.desc}, {category: req.body.category}, {price: req.body.price} ] } });
 };
 
+exports.contactInfo = function(req, res){
+	var user = switcher;
+	User.update({authId:user}, {$push:{ contacts_info:req.body.contact_info}});
+};
