@@ -80,9 +80,10 @@ passport.authenticate('facebook',
 
 
 app.get('/auth/facebook/callback',
-passport.authenticate('facebook', {
-  successRedirect: '/profile',
-  failureRedirect: '/error'}));
+passport.authenticate('facebook', { failureRedirect: '/' }),
+function(req, res) {
+ res.redirect('/profile');
+});
 //profile section
 app.get('/profile/:user_id?', function(req, res){
 	if(!req.params.id){
