@@ -16,7 +16,9 @@
     "mongoose": "*",
     "passport": "*",
     "passport-facebook": "*",
-    "jade": "~1.3.0"
+    "jade": "~1.3.0",
+    "passport-google": "*",
+    "express-session": "^1.7.4"
   },
   "description": "api for oddjobs clients",
   "main": "app.js",

@@ -10,46 +10,64 @@ var api = require('./routes/users');
 var passport = require('passport');
 var FacebookStrategy = require('passport-facebook').Strategy;
 var config = require('./conf/auth');
+var routes = require('./routes/index');
+var mongoose = require('mongoose');
+var session = require('express-session');
+GoogleStrategy = require('passport-google').Strategy;
 
-passport.serializeUser(function(user, done) {
-done(null, user);
+var Users = schema.userModel;
+/*var Users = mongoose.model('Users', {
+  oauthID: Number,
+  name: String,
+  email: String
 });
-passport.deserializeUser(function(obj, done) {
-done(null, obj);
-});
-var User = schema.userModel;
-
+*/
 // config
+
+
 passport.use(new FacebookStrategy({
 clientID: config.facebook.clientID,
 clientSecret: config.facebook.clientSecret,
 callbackURL: config.facebook.callbackURL
 },
 function(accessToken, refreshToken, profile, done) {
-User.findOne({ authID: profile.id }, function(err, user) {
+Users.findOne({ authId: profile.id }, function(err, user) {
 if(err) { console.log(err); }
 if (!err && user !== null) {
   done(null, user);
 } else {
  
- var User = new User({
-	authId: profile.id,
-	email: profile.emails[0].value,
-	name: profile.displayName,
-	created: Date.now()
+  var users = new Users({
+  authId: profile.id,
+	 email: profile.emails[0].value,
+	 name: profile.displayName,
+	 created: Date.now()
 });
- User.save(function(err) {
+	 
+ users.save(function(err, User) {
     if(err) {
-      console.log(err);
+     return console.log(err);
     } else {
       console.log("saving user ...");
-      done(null, user);
+      done(null, users);
     }
   });
 }
 });
 }
 ));
+
+passport.use(new GoogleStrategy({
+    returnURL: 'http://localhost:3000/auth/google/return',
+    realm: 'http://localhost:3000/'
+  },
+  function(identifier, profile, done) {
+    User.findOrCreate({ openId: identifier }, function(err, user) {
+      done(err, user);
+    });
+  }
+));
+
 
 var app = express();
 // view engine setup
@@ -60,10 +78,26 @@ app.use(logger('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded());
 app.use(cookieParser());
+app.use(session({ secret: 'odd', cookie: { maxAge: 60000 }}))
 app.use(passport.initialize());
 app.use(passport.session());
 app.use(express.static(path.join(__dirname, 'public')));
 //routing
+
+
+
+
+passport.serializeUser(function(user, done) {
+done(null, user._id);
+});
+passport.deserializeUser(function(id, done) {
+ Users.findById(id, function(err, user){
+     console.log(user);
+     if(!err) done(null, user);
+     else done(err, null);
+ });
+});
+
 
 app.param('user_id', function(req, res, next, id){
 	User.find({authId:id}, function(err, user){
@@ -78,27 +112,31 @@ passport.authenticate('facebook',
 {scope: 'email'}), function(req, res){
 });
 
-
+app.use('/', routes);
 app.get('/auth/facebook/callback',
-passport.authenticate('facebook', { failureRedirect: '/' }),
-function(req, res) {
- res.redirect('/profile');
-});
+  passport.authenticate('facebook', { successRedirect: '/profile',
+                                      failureRedirect: '/login' }));
 //profile section
-app.get('/profile/:user_id?', function(req, res){
-	if(!req.params.id){
-	User.find({authId:req.session.passport.user}, function(err, user){
+app.get('/profile', function(req, res){
+	Users.findById(req.session.passport.user, function(err, user){
 		if(err) {
 			console.log(err);
 			res.send(500);
 		}
 		res.json(200, user);
 	});
-}
-	else{
-		res.json(200, req.user);
-	}
+
 });
+
+app.get('/auth/google', passport.authenticate('google'));
+
+// Google will redirect the user to this URL after authentication.  Finish
+// the process by verifying the assertion.  If valid, the user will be
+// logged in.  Otherwise, authentication has failed.
+app.get('/auth/google/return',
+  passport.authenticate('google', { successRedirect: '/',
+                                    failureRedirect: '/login' }));
+                                    
 //app.get('/profile/:id', api.user);
 app.put('/profile/update/about', api.about);
 app.put('/profile/edit/contact_info/:user_id?', api.contactInfo);
