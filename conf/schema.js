@@ -27,11 +27,12 @@ name: String,
 });
 
 var User = mongoose.model('User',{
-	authId: Number,
+	authId: String,
 	email: String,
 	name: String,
 	about: String,
 	contacts: [Contacts],
+	created: Number,
 	contact_info: Number
 	});
 	
@@ -42,6 +43,7 @@ var User = mongoose.model('User',{
 		comments: [Comments],
 		pic: String,
 		cost: Number,
+		product_id: Number,
 		rating: {type: Number, default: 0}
 	});
 	var Shop = mongoose.model('Shop',{

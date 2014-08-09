@@ -4,3 +4,8 @@ block content
   h1= title
   p Welcome to #{title}
   a(href="/auth/facebook") Login with Facebook
+  p put {/profile/update/about}  about=name of text field. short description of the profle owner
+  p post {/profile/create/shop}  shopName=name of textfield. name of shop to be created
+  p post {/profile/shop/addProduct}  tag desc category price= textfields. tag is the tagname, desc being a short description of the product.
+  p put {/profile/edit/contact_info}  contact_info=textfield. being your personal phone number or address. as many as you want
+  p {post /profile/:product_id/comment}  name email comment rate=textfields. rate is the rating number rated by the commenter on the product

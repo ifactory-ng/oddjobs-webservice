@@ -1,3 +1,5 @@
+var express = require('express');
+var router = express.Router();
 var schema = require('../conf/schema');
 var User = schema.userModel;
 var Shop = schema.shopModel;
@@ -11,6 +13,15 @@ var Shop = schema.shopModel;
 	});
 	
 };*/
+/*router.param('user', function(req, res, next, id){
+	User.find({authId:id}, function(err, user){
+		if(err) return next(err);
+		if(!user) return next(new Error('failed to find user'));
+		req.user = user;
+		next();
+	});
+});
+*/
 function switcher(){
 	if(req.session.passport.user){
 		return req.session.passport.user;
@@ -19,17 +30,12 @@ function switcher(){
 		return req.user.authId;
 	}
 }
-exports.about = function(req, res){
+
+router.put('/profile/update/about/:user_id?', function(req, res){
 	var obj = req.body.about;
-	var userid;
-	if(req.session.passport.user){
-		userid = req.session.passport.user;
-	}
-	else{
-		userid = req.user.authId;
-	}
-	User.update({authId:userid}, {
-		about: obj
+	var userid = switcher;
+	User.update({"authId": "userid"}, {
+		"about": "obj"
 	}, function(err, obj){
 		if(err){
 			console.log("bad credentials");
@@ -39,22 +45,41 @@ exports.about = function(req, res){
 		res.json(200, obj);
 	}
 );
-};
+});
 
+router.post('/profile/create/shop/:user_id?', function(req, res){
+	var shop = new Shop({
+		"shop_name": "req.body.shopName",
+		"owner_id": "switcher"
+	});
+	shop.save;
+	res.json(200, shop);
+	});
 
-exports.createShop = function(req, res){
-	var data = req.body.shopName;
-	Shop.shop_name = data;
-	Shop.owner_id = switcher;
-	Shop.save;
-	};
-
-exports.addProduct = function(req, res){
+router.post('/profile/shop/addProduct/:user_id?', function(req, res){
 	var user = switcher;
-	Shop.update({owner_id:user}, {$push: { product: [ {tag_name: req.body.tag}, {description: req.body.desc}, {category: req.body.category}, {price: req.body.price} ] } });
-};
+	Shop.update({"owner_id":"user"}, {$push: { "product": [ {"tag_name": "req.body.tag"}, {"description": "req.body.desc"}, {"category": "req.body.category"}, {"price": "req.body.price"} ] } });
+});
 
-exports.contactInfo = function(req, res){
+router.put('/profile/edit/contact_info/:user_id?', function(req, res){
 	var user = switcher;
-	User.update({authId:user}, {$push:{ contacts_info:req.body.contact_info}});
-};
+	User.update({"authId":"user"}, {$push:{ "contacts_info":"req.body.contact_info"}});
+});
+
+router.post('/profile/:product_id/comment', function(req, res){
+	var comment = req.body.comment;
+	Shop.find({"product.product_id": "req.params.product_id"}, {"product" :{"$elemMatch":{"product_id" : "req.params.product_id"}}},
+	function(err, product){
+		product.update({"product_id": "req.params.product_id"}, {$push: {"comments": [ {"name": "req.body.name"}, {"email": "req.body.email"}, {"comment": "req.body.comment"}, {"rating": "req.body.rate"} ] } },
+		function(err, product){
+			if(err){
+				console.log("error updating product");
+				res.send(500);
+				return;
+			}
+		res.json(200, product);
+			
+		});
+	});
+});
+module.exports = router;

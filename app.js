@@ -22,9 +22,8 @@ var Users = schema.userModel;
   email: String
 });
 */
+
 // config
-
-
 passport.use(new FacebookStrategy({
 clientID: config.facebook.clientID,
 clientSecret: config.facebook.clientSecret,
@@ -61,12 +60,25 @@ passport.use(new GoogleStrategy({
     returnURL: 'http://localhost:3000/auth/google/return',
     realm: 'http://localhost:3000/'
   },
-  function(identifier, profile, done) {
-    User.findOrCreate({ openId: identifier }, function(err, user) {
+  function(profile, done) {
+    Users.findOne({ authId: profile}, function(err, user) {
+       if(err) { console.log(err); }
+if (!err && user !== null) {
+  done(null, user);
+} else {
+ 
+  var users = new Users({
+  authId: profile.id,
+	 //email: profile.emails[0].value,
+	 name: profile.displayName,
+	 created: Date.now()
+});
+
       done(err, user);
-    });
-  }
-));
+    
+}
+});
+}));
 
 
 var app = express();
@@ -78,12 +90,13 @@ app.use(logger('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded());
 app.use(cookieParser());
-app.use(session({ secret: 'odd', cookie: { maxAge: 60000 }}))
+app.use(session({ secret: 'odd', cookie: { maxAge: 60000 }}));
 app.use(passport.initialize());
 app.use(passport.session());
 app.use(express.static(path.join(__dirname, 'public')));
 //routing
-
+app.use('/', routes);
+app.use('/users', routes);
 
 
 
@@ -99,26 +112,25 @@ passport.deserializeUser(function(id, done) {
 });
 
 
-app.param('user_id', function(req, res, next, id){
-	User.find({authId:id}, function(err, user){
-		if(err) return next(err);
-		if(!user) return next(new Error('failed to find user'));
+/*app.param('user_id', function(req, res, next, id){
+	Users.findOne({email: id}, function(err, user){
+		if(err) {return next(err);}
 		req.user = user;
 		next();
 	});
-});
+});*/
 app.get('/auth/facebook',
 passport.authenticate('facebook',
 {scope: 'email'}), function(req, res){
 });
 
-app.use('/', routes);
+
 app.get('/auth/facebook/callback',
   passport.authenticate('facebook', { successRedirect: '/profile',
                                       failureRedirect: '/login' }));
 //profile section
 app.get('/profile', function(req, res){
-	Users.findById(req.session.passport.user, function(err, user){
+Users.findById(req.session.passport.user, function(err, user){
 		if(err) {
 			console.log(err);
 			res.send(500);
@@ -138,10 +150,7 @@ app.get('/auth/google/return',
                                     failureRedirect: '/login' }));
                                     
 //app.get('/profile/:id', api.user);
-app.put('/profile/update/about', api.about);
-app.put('/profile/edit/contact_info/:user_id?', api.contactInfo);
-app.post('/profile/create/shop/:user_id?', api.createShop);
-app.post('/profile/shop/addProduct/:user_id?', api.addProduct);
+
 
 /*function ensureAuthenticated(req, res, next){
 	if (req.isAuthenticated()) { return next(); }
