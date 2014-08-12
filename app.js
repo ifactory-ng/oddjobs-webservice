@@ -112,13 +112,13 @@ passport.deserializeUser(function(id, done) {
 });
 
 
-/*app.param('user_id', function(req, res, next, id){
-	Users.findOne({email: id}, function(err, user){
+app.param('user_id', function(req, res, next, id){
+	Users.findOne({authId: id}, function(err, user){
 		if(err) {return next(err);}
 		req.user = user;
 		next();
 	});
-});*/
+});
 app.get('/auth/facebook',
 passport.authenticate('facebook',
 {scope: 'email'}), function(req, res){
@@ -129,7 +129,11 @@ app.get('/auth/facebook/callback',
   passport.authenticate('facebook', { successRedirect: '/profile',
                                       failureRedirect: '/login' }));
 //profile section
-app.get('/profile', function(req, res){
+app.get('/profile/:user_id?', function(req, res){
+	if(req.user){
+		res.json(200, req.user);
+		
+	}else{
 Users.findById(req.session.passport.user, function(err, user){
 		if(err) {
 			console.log(err);
@@ -137,7 +141,7 @@ Users.findById(req.session.passport.user, function(err, user){
 		}
 		res.json(200, user);
 	});
-
+}
 });
 
 app.get('/auth/google', passport.authenticate('google'));

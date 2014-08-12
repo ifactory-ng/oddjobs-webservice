@@ -3,6 +3,7 @@ var mongodbURL = process.env.MONGOLAB_URI || process.env.MONGOHQ_URL || 'mongodb
 var mongodbOptions = {};
 var db = mongoose.connection;
 db.on('error', console.error);
+mongoose.set('debug', true);
 mongoose.connect(mongodbURL, mongodbOptions, function (err, res){
 	if(err){
 		console.log('Connection refused to ' + mongodbURL);
