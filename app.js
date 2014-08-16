@@ -11,6 +11,7 @@ var passport = require('passport');
 var FacebookStrategy = require('passport-facebook').Strategy;
 var config = require('./conf/auth');
 var routes = require('./routes/index');
+var route = require('./routes/users');
 var mongoose = require('mongoose');
 var session = require('express-session');
 GoogleStrategy = require('passport-google').Strategy;
@@ -96,7 +97,7 @@ app.use(passport.session());
 app.use(express.static(path.join(__dirname, 'public')));
 //routing
 app.use('/', routes);
-app.use('/users', routes);
+app.use('/', route);
 
 
 

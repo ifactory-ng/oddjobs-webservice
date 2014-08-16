@@ -3,6 +3,8 @@ var mongodbURL = process.env.MONGOLAB_URI || process.env.MONGOHQ_URL || 'mongodb
 var mongodbOptions = {};
 var db = mongoose.connection;
 db.on('error', console.error);
+var elmongo = require('elmongo');
+var Schema = mongoose.Schema;
 mongoose.set('debug', true);
 mongoose.connect(mongodbURL, mongodbOptions, function (err, res){
 	if(err){
@@ -12,32 +14,32 @@ mongoose.connect(mongodbURL, mongodbOptions, function (err, res){
 		console.log('Connection successful to: ' + mongodbURL);
 	}
 });
-
 //user schema
-var Contacts = mongoose.model('Contacts', {
+var Contacts = new Schema({
 	name: String,
 	contact_id: String,
 	email: String
 });
 
-var Comments = mongoose.model( 'Comments', {
+var Comments = new Schema({
 name: String,
 	email: String,
 	comment: String,
 	rating: {type: Number, default:0}
 });
 
-var User = mongoose.model('User',{
+var User = new Schema({
 	authId: String,
 	email: String,
 	name: String,
 	about: String,
 	contacts: [Contacts],
 	created: Number,
+	shop_name: String,
 	contact_info: Number
 	});
 	
-	var Product = mongoose.model('Products',{
+	/*var Product = mongoose.model('Products',{
 		tag_name: String,
 		description: String,
 		category: String,
@@ -45,15 +47,30 @@ var User = mongoose.model('User',{
 		pic: String,
 		cost: Number,
 		product_id: Number,
+		user_id: String,
+		location: String,
 		rating: {type: Number, default: 0}
-	});
-	var Shop = mongoose.model('Shop',{
-		 owner_id: String,
-		 shop_name: String,
-		 product: [Product]
-	});
-//	userModel = mongoose.model('User', User);
-//shopModel = mongoose.model('Shop', Shop);
+	});*/
 	
-	exports.shopModel = Shop;
-	exports.userModel = User;
+	
+	
+	var Product = new Schema({
+		tag_name: String,
+		description: String,
+		category: String,
+		comments: [Comments],
+		pic: String,
+		cost: Number,
+		product_id: Number,
+		user_id: String,
+		location: String,
+		rating: {type: Number, default: 0}
+});
+
+Product.plugin(elmongo);
+exports.productModel = mongoose.model('Products', Product);
+//var Search = mongoose.model('elastic', Search);
+exports.userModel = mongoose.model('Users', User);
+//shopModel = mongoose.model('Shop', Shop);
+
+	

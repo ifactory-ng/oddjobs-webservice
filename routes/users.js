@@ -2,7 +2,14 @@ var express = require('express');
 var router = express.Router();
 var schema = require('../conf/schema');
 var User = schema.userModel;
-var Shop = schema.shopModel;
+var mongoose = require('mongoose');
+var Product = schema.productModel;
+
+Product.sync(function (err, numSynced){
+	console.log('number of search items indexed:', numSynced);
+});
+
+
 /*exports.user = function(req, res){
 	var id = req.params.id;
 	User.findOne({authid: id}, function(err, user){
@@ -13,7 +20,8 @@ var Shop = schema.shopModel;
 	});
 	
 };*/
-/*router.param('user', function(req, res, next, id){
+
+router.param('user', function(req, res, next, id){
 	User.find({authId:id}, function(err, user){
 		if(err) return next(err);
 		if(!user) return next(new Error('failed to find user'));
@@ -21,21 +29,21 @@ var Shop = schema.shopModel;
 		next();
 	});
 });
-*/
-function switcher(){
+
+var id = function switcher(){
 	if(req.session.passport.user){
 		return req.session.passport.user;
 	}
 	else{
-		return req.user.authId;
+		return req.user._id;
 	}
-}
+};
 
 router.put('/profile/update/about/:user_id?', function(req, res){
 	var obj = req.body.about;
 	var userid = switcher;
-	User.update({"authId": "userid"}, {
-		"about": "obj"
+	User.update({"_id": userid}, {
+		"about": obj
 	}, function(err, obj){
 		if(err){
 			console.log("bad credentials");
@@ -48,29 +56,43 @@ router.put('/profile/update/about/:user_id?', function(req, res){
 });
 
 router.post('/profile/create/shop/:user_id?', function(req, res){
-	var shop = new Shop({
-		"shop_name": "req.body.shopName",
-		"owner_id": "switcher"
+	User.update({_id: switcher}, {
+		"shop_name": req.body.shopName}, function(err, obj){
+		if(err){
+			console.log("bad credentials");
+		next(err);
+			
+		}
+		res.json(200, obj);
 	});
-	shop.save;
-	res.json(200, shop);
 	});
 
-router.post('/profile/shop/addProduct/:user_id?', function(req, res){
+router.post('/profile/Product/:user_id?', function(req, res){
 	var user = switcher;
-	Shop.update({"owner_id":"user"}, {$push: { "product": [ {"tag_name": "req.body.tag"}, {"description": "req.body.desc"}, {"category": "req.body.category"}, {"price": "req.body.price"} ] } });
+	var products = new Product({
+	"tag_name": req.body.tag,
+	"description": req.body.desc,
+	"category": req.body.category,
+"price": req.body.price,
+"user_id": switcher
+	});
+	products.save(function(err){
+		if(err){
+			console.log(err);
+			return res.send(500);
+		}
+		res.json(200, products);
+	});
 });
 
 router.put('/profile/edit/contact_info/:user_id?', function(req, res){
 	var user = switcher;
-	User.update({"authId":"user"}, {$push:{ "contacts_info":"req.body.contact_info"}});
+	User.update({"_id":user}, {$push:{ "contacts_info":req.body.contact_info}});
 });
 
-router.post('/profile/:product_id/comment', function(req, res){
+router.post('/public/:product_id/comment', function(req, res){
 	var comment = req.body.comment;
-	Shop.find({"product.product_id": "req.params.product_id"}, {"product" :{"$elemMatch":{"product_id" : "req.params.product_id"}}},
-	function(err, product){
-		product.update({"product_id": "req.params.product_id"}, {$push: {"comments": [ {"name": "req.body.name"}, {"email": "req.body.email"}, {"comment": "req.body.comment"}, {"rating": "req.body.rate"} ] } },
+	Product.update({"product_id": req.params.product_id}, {$push: {"comments": [ {"name": req.body.name}, {"email": req.body.email}, {"comment": req.body.comment}, {"rating": req.body.rate} ] } },
 		function(err, product){
 			if(err){
 				console.log("error updating product");
@@ -81,5 +103,26 @@ router.post('/profile/:product_id/comment', function(req, res){
 			
 		});
 	});
-});
+	
+	router.get('/profile/products/:user_id?', function(req, res){
+		Product.find({user_id:id}, function(err, result){
+			if(err){
+				console.log(err);
+				res.send(500);
+			}
+			res.json(200, result);
+		});
+	});
+	
+	router.get('/profile/product/:product_id', function(req, res){
+		Product.findOne({product_id: req.params.product_id},  function(err, result){
+			if(err){
+			console.log("error processing report");
+			res.send(500);
+				}
+				res.json(200, result);
+		});
+	});
+
+
 module.exports = router;
