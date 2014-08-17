@@ -1,49 +1,48 @@
 var express = require('express');
 var router = express.Router();
 var schema = require('../conf/schema');
-var User = schema.userModel;
+var user = schema.userModel;
 var mongoose = require('mongoose');
 var Product = schema.productModel;
-
+var switcher = require('../conf/my_middle');
 Product.sync(function (err, numSynced){
 	console.log('number of search items indexed:', numSynced);
 });
 
 
-/*exports.user = function(req, res){
+/*exports.req.user = function(req, res){
 	var id = req.params.id;
-	User.findOne({authid: id}, function(err, user){
+	req.user.findOne({authid: id}, function(err, req.user){
 		if (err){
 			console.log(err);
 		}
-		res.json(200, user);
+		res.json(200, req.user);
 	});
 	
 };*/
 
-router.param('user', function(req, res, next, id){
-	User.find({authId:id}, function(err, user){
-		if(err) return next(err);
-		if(!user) return next(new Error('failed to find user'));
-		req.user = user;
+router.param('user_id', function(req, res, next, id){
+	user.findOne({authId: id}, function(err, user){
+		if(err) {return next(err);}
+		req.user = user._id;
 		next();
 	});
 });
-
-var id = function switcher(){
-	if(req.session.passport.user){
-		return req.session.passport.user;
+/*var id = function switcher(){
+	if(req.session.passport.req.user){
+		return req.session.passport.req.user;
 	}
 	else{
-		return req.user._id;
+		return req.req.user._id;
 	}
-};
+};*/
 
-router.put('/profile/update/about/:user_id?', function(req, res){
+router.put('/profile/update/about/:user_id?', switcher, function(req, res){
 	var obj = req.body.about;
-	var userid = switcher;
-	User.update({"_id": userid}, {
-		"about": obj
+console.log(obj);
+console.log(req.user);
+	user.update({_id:req.user}, {
+		about: obj
 	}, function(err, obj){
 		if(err){
 			console.log("bad credentials");
@@ -55,8 +54,8 @@ router.put('/profile/update/about/:user_id?', function(req, res){
 );
 });
 
-router.post('/profile/create/shop/:user_id?', function(req, res){
-	User.update({_id: switcher}, {
+router.post('/profile/create/shop/:req.user_id?', switcher, function(req, res){
+	user.update({_id: req.user}, {
 		"shop_name": req.body.shopName}, function(err, obj){
 		if(err){
 			console.log("bad credentials");
@@ -67,14 +66,13 @@ router.post('/profile/create/shop/:user_id?', function(req, res){
 	});
 	});
 
-router.post('/profile/Product/:user_id?', function(req, res){
-	var user = switcher;
+router.post('/profile/Product/:req.user_id?', switcher, function(req, res){
 	var products = new Product({
 	"tag_name": req.body.tag,
 	"description": req.body.desc,
 	"category": req.body.category,
 "price": req.body.price,
-"user_id": switcher
+"user_id": req.user
 	});
 	products.save(function(err){
 		if(err){
@@ -85,9 +83,9 @@ router.post('/profile/Product/:user_id?', function(req, res){
 	});
 });
 
-router.put('/profile/edit/contact_info/:user_id?', function(req, res){
-	var user = switcher;
-	User.update({"_id":user}, {$push:{ "contacts_info":req.body.contact_info}});
+router.put('/profile/edit/contact_info/:user_id?', switcher, function(req, res){
+	
+req.user.update({"_id":req.user}, {$push:{ "contacts_info":req.body.contact_info}});
 });
 
 router.post('/public/:product_id/comment', function(req, res){
@@ -104,8 +102,8 @@ router.post('/public/:product_id/comment', function(req, res){
 		});
 	});
 	
-	router.get('/profile/products/:user_id?', function(req, res){
-		Product.find({user_id:id}, function(err, result){
+	router.get('/profile/products/:user_id?', switcher, function(req, res){
+		Product.find({user_id:req.user}, function(err, result){
 			if(err){
 				console.log(err);
 				res.send(500);
