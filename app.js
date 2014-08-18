@@ -12,6 +12,7 @@ var FacebookStrategy = require('passport-facebook').Strategy;
 var config = require('./conf/auth');
 var routes = require('./routes/index');
 var route = require('./routes/users');
+var search = require('./routes/search');
 var mongoose = require('mongoose');
 var session = require('express-session');
 GoogleStrategy = require('passport-google').Strategy;
@@ -98,7 +99,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 //routing
 app.use('/', routes);
 app.use('/', route);
-
+app.use('/', search);
 
 
 passport.serializeUser(function(user, done) {

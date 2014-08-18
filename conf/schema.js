@@ -55,15 +55,15 @@ var User = new Schema({
 	
 	
 	var Product = new Schema({
-		tag_name: String,
-		description: String,
-		category: String,
+		tag_name: {type: String, autocomplete:true},
+		description: {type: String, autocomplete:true},
+		category: {type: String, autocomplete:true},
 		comments: [Comments],
 		pic: String,
 		cost: Number,
 		product_id: Number,
 		user_id: String,
-		location: String,
+		location: {type: String, autocomplete:true},
 		rating: {type: Number, default: 0}
 });
 

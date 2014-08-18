@@ -6,6 +6,7 @@ var mongoose = require('mongoose');
 var Product = schema.productModel;
 var switcher = require('../conf/my_middle');
 Product.sync(function (err, numSynced){
+	
 	console.log('number of search items indexed:', numSynced);
 });
 
@@ -47,14 +48,12 @@ console.log(req.user);
 		if(err){
 			console.log("bad credentials");
 		next(err);
-			
-		}
+			}
 		res.json(200, obj);
-	}
-);
+	});
 });
 
-router.post('/profile/create/shop/:req.user_id?', switcher, function(req, res){
+router.post('/profile/create/shop/:user_id?', switcher, function(req, res){
 	user.update({_id: req.user}, {
 		"shop_name": req.body.shopName}, function(err, obj){
 		if(err){
@@ -66,7 +65,7 @@ router.post('/profile/create/shop/:req.user_id?', switcher, function(req, res){
 	});
 	});
 
-router.post('/profile/Product/:req.user_id?', switcher, function(req, res){
+router.post('/profile/Product/:user_id?', switcher, function(req, res){
 	var products = new Product({
 	"tag_name": req.body.tag,
 	"description": req.body.desc,
@@ -79,7 +78,7 @@ router.post('/profile/Product/:req.user_id?', switcher, function(req, res){
 			console.log(err);
 			return res.send(500);
 		}
-		res.json(200, products);
+		return res.json(200, products);
 	});
 });
 
