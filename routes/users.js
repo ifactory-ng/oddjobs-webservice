@@ -5,10 +5,7 @@ var user = schema.userModel;
 var mongoose = require('mongoose');
 var Product = schema.productModel;
 var switcher = require('../conf/my_middle');
-Product.sync(function (err, numSynced){
-	
-	console.log('number of search items indexed:', numSynced);
-});
+
 
 
 /*exports.req.user = function(req, res){

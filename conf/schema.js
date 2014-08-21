@@ -68,7 +68,16 @@ var User = new Schema({
 });
 
 Product.plugin(elmongo);
-exports.productModel = mongoose.model('Products', Product);
+
+
+var products = mongoose.model('Products', Product);
+
+products.sync(function (err, numSynced){
+	
+	console.log('number of search items indexed:', numSynced);
+});
+
+exports.productModel = products;
 //var Search = mongoose.model('elastic', Search);
 exports.userModel = mongoose.model('Users', User);
 //shopModel = mongoose.model('Shop', Shop);
