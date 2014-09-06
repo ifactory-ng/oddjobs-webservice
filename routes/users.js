@@ -46,7 +46,7 @@ console.log(req.user);
 			console.log("bad credentials");
 		next(err);
 			}
-		res.json(200, obj);
+	return res.json(200, obj);
 	});
 });
 
@@ -58,7 +58,7 @@ router.post('/profile/create/shop/:user_id?', switcher, function(req, res){
 		next(err);
 			
 		}
-		res.json(200, obj);
+		return res.json(200, obj);
 	});
 	});
 
@@ -93,7 +93,7 @@ router.post('/public/:product_id/comment', function(req, res){
 				res.send(500);
 				return;
 			}
-		res.json(200, product);
+		return res.json(200, product);
 			
 		});
 	});
@@ -104,7 +104,7 @@ router.post('/public/:product_id/comment', function(req, res){
 				console.log(err);
 				res.send(500);
 			}
-			res.json(200, result);
+			return res.json(200, result);
 		});
 	});
 	
@@ -112,9 +112,9 @@ router.post('/public/:product_id/comment', function(req, res){
 		Product.findOne({product_id: req.params.product_id},  function(err, result){
 			if(err){
 			console.log("error processing report");
-			res.send(500);
+			return res.send(500);
 				}
-				res.json(200, result);
+				return res.json(200, result);
 		});
 	});
 

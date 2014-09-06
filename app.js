@@ -135,17 +135,20 @@ app.get('/profile/:user_id?', function(req, res){
 	if(req.user){
 		res.json(200, req.user);
 		
-	}else{
+	}
+	else{
 Users.findById(req.session.passport.user, function(err, user){
 		if(err) {
 			console.log(err);
 			res.send(500);
 		}
-		res.json(200, user);
+		return res.json(200, user);
 	});
 }
 });
-
+/*app.get('/test', function(req, res){
+	console.log(req.query.test);
+});*/
 app.get('/auth/google', passport.authenticate('google'));
 
 // Google will redirect the user to this URL after authentication.  Finish
