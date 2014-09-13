@@ -81,7 +81,13 @@ router.post('/profile/Product/:user_id?', switcher, function(req, res){
 
 router.put('/profile/edit/contact_info/:user_id?', switcher, function(req, res){
 	
-req.user.update({"_id":req.user}, {$push:{ "contacts_info":req.body.contact_info}});
+req.user.update({"_id":req.user}, {$push:{ "contacts_info":req.body.contact_info}}, function(err, data){
+	if(err){
+		console.log(err);
+		return res.send(500);
+	}
+return res.json(200,data);
+});
 });
 
 router.post('/public/:product_id/comment', function(req, res){
