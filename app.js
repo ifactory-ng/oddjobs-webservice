@@ -96,6 +96,15 @@ app.use(session({ secret: 'odd', cookie: { maxAge: 60000 }}));
 app.use(passport.initialize());
 app.use(passport.session());
 app.use(express.static(path.join(__dirname, 'public')));
+app.use(function (req, res, next) {
+        res.setHeader('Access-Control-Allow-Origin', '*');
+
+        res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE');
+        res.setHeader('Access-Control-Allow-Headers', 'X-Requested-With,content-type');
+        next();
+    }
+);
+
 //routing
 app.use('/', routes);
 app.use('/', route);

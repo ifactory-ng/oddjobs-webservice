@@ -56,7 +56,7 @@ var User = new Schema({
 	
 	var Product = new Schema({
 		tag_name: {type: String, autocomplete:true},
-		description: {type: String, autocomplete:true},
+		description: {type: String},
 		category: {type: String, autocomplete:true},
 		comments: [Comments],
 		pic: String,
@@ -68,7 +68,6 @@ var User = new Schema({
 });
 
 Product.plugin(elmongo);
-
 
 var products = mongoose.model('Products', Product);
 
