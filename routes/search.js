@@ -8,7 +8,7 @@ var Product = schema.productModel;
 
 
 router.get('/search', function(req, res){
-	Product.search({ query: req.query.q, fuzziness: 0.5 }, function(err, results){
+	Product.search({ query: req.query.q, fuzziness: 0.7}, function(err, results){
 		if(err){
 			console.log(err);
 		}

@@ -26,61 +26,16 @@ var Users = schema.userModel;
 */
 
 // config
-passport.use(new FacebookStrategy({
+/*passport.use(new FacebookStrategy({
 clientID: config.facebook.clientID,
 clientSecret: config.facebook.clientSecret,
 callbackURL: config.facebook.callbackURL
 },
 function(accessToken, refreshToken, profile, done) {
-Users.findOne({ authId: profile.id }, function(err, user) {
-if(err) { console.log(err); }
-if (!err && user !== null) {
-  done(null, user);
-} else {
- 
-  var users = new Users({
-  authId: profile.id,
-	 email: profile.emails[0].value,
-	 name: profile.displayName,
-	 created: Date.now()
-});
-	 
- users.save(function(err, User) {
-    if(err) {
-     return console.log(err);
-    } else {
-      console.log("saving user ...");
-      done(null, users);
-    }
-  });
-}
-});
+
 }
 ));
-
-passport.use(new GoogleStrategy({
-    returnURL: 'http://localhost:3000/auth/google/return',
-    realm: 'http://localhost:3000/'
-  },
-  function(profile, done) {
-    Users.findOne({ authId: profile}, function(err, user) {
-       if(err) { console.log(err); }
-if (!err && user !== null) {
-  done(null, user);
-} else {
- 
-  var users = new Users({
-  authId: profile.id,
-	 //email: profile.emails[0].value,
-	 name: profile.displayName,
-	 created: Date.now()
-});
-
-      done(err, user);
-    
-}
-});
-}));
+*/
 
 
 var app = express();
@@ -111,7 +66,7 @@ app.use('/', route);
 app.use('/', search);
 
 
-passport.serializeUser(function(user, done) {
+/*passport.serializeUser(function(user, done) {
 done(null, user._id);
 });
 passport.deserializeUser(function(id, done) {
@@ -121,7 +76,7 @@ passport.deserializeUser(function(id, done) {
      else done(err, null);
  });
 });
-
+*/
 
 app.param('user_id', function(req, res, next, id){
 	Users.findOne({authId: id}, function(err, user){
@@ -130,12 +85,32 @@ app.param('user_id', function(req, res, next, id){
 		next();
 	});
 });
-app.get('/auth/facebook',
-passport.authenticate('facebook',
-{scope: 'email'}), function(req, res){
+app.get('/authenticate', function(req, res){
+	var profile = req.body;
+Users.findOne({ email: req.body.email }, function(err, user) {
+if(err) { console.log(err); }
+if (!err && user !== null) {
+  return res.send(200);
+} else {
+ 
+  var users = new Users({
+  	authId: req.body.userID,
+email: profile.email,
+	 name: profile.name,
+	 created: Date.now()
 });
-
-
+	 
+ users.save(function(err, User) {
+    if(err) {
+     return console.log(err);
+    } else {
+      console.log("saving user ...");
+      done(null, users);
+    }
+  });
+}
+});
+});
 app.get('/auth/facebook/callback',
   passport.authenticate('facebook', { successRedirect: '/profile',
                                       failureRedirect: '/login' }));
