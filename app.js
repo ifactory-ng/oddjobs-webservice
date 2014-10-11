@@ -102,15 +102,13 @@ email: profile.email,
      return console.log(err);
     } else {
       console.log("saving user ...");
-      done(null, users);
+      return res.send(200);
+    	
     }
   });
 }
 });
 });
-app.get('/auth/facebook/callback',
-  passport.authenticate('facebook', { successRedirect: '/profile',
-                                      failureRedirect: '/login' }));
 //profile section
 app.get('/profile/:user_id?', function(req, res){
 	if(req.user){
