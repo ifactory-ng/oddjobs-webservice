@@ -92,7 +92,7 @@ return res.json(200,data);
 
 router.post('/public/:product_id/comment', function(req, res){
 	var comment = req.body.comment;
-	Product.update({"product_id": req.params.product_id}, {$push: {"comments": [ {"name": req.body.name}, {"email": req.body.email}, {"comment": req.body.comment}, {"rating": req.body.rate} ] } },
+	Product.update({"product_id": req.params.product_id}, {$push: {"comments": {"name": req.body.name, "email": req.body.email, "comment": req.body.comment, "rating": req.body.rate}}},
 		function(err, product){
 			if(err){
 				console.log("error updating product");

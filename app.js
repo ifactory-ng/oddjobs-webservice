@@ -7,15 +7,12 @@ var bodyParser = require('body-parser');
 var schema = require('./conf/schema');
 //var routes = require('./routes/index');
 var api = require('./routes/users');
-var passport = require('passport');
-var FacebookStrategy = require('passport-facebook').Strategy;
 var config = require('./conf/auth');
 var routes = require('./routes/index');
 var route = require('./routes/users');
 var search = require('./routes/search');
 var mongoose = require('mongoose');
 var session = require('express-session');
-GoogleStrategy = require('passport-google').Strategy;
 
 var Users = schema.userModel;
 /*var Users = mongoose.model('Users', {
