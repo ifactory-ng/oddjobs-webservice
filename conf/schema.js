@@ -3,6 +3,7 @@ var mongodbURL = process.env.MONGOLAB_URI || process.env.MONGOHQ_URL || 'mongodb
 var mongodbOptions = {};
 var db = mongoose.connection;
 db.on('error', console.error);
+var elmongo = require('elmongo');
 var Schema = mongoose.Schema;
 mongoose.set('debug', true);
 mongoose.connect(mongodbURL, mongodbOptions, function (err, res){
@@ -13,7 +14,6 @@ mongoose.connect(mongodbURL, mongodbOptions, function (err, res){
 		console.log('Connection successful to: ' + mongodbURL);
 	}
 });
-
 //user schema
 var Contacts = new Schema({
 	name: String,
@@ -55,25 +55,28 @@ var User = new Schema({
 	
 	
 	var Product = new Schema({
-		tag_name: {type: String},
+		tag_name: {type: String, autocomplete:true},
 		description: {type: String},
-		category: {type: String},
+		category: {type: String, autocomplete:true},
 		comments: [Comments],
 		pic: String,
 		cost: Number,
 		product_id: Number,
 		user_id: String,
-		location: {type: String},
+		location: {type: String, autocomplete:true},
 		rating: {type: Number, default: 0}
 });
 
-
+//Product.plugin(elmongo);
+Product.plugin(elmongo, { host: process.env.SEARCHBOX_URL || 'localhost', port: 9200});
 var products = mongoose.model('Products', Product);
 
+products.sync(function (err, numSynced){
+	
+	console.log('number of search items indexed:', numSynced);
+});
 
 exports.productModel = products;
 //var Search = mongoose.model('elastic', Search);
 exports.userModel = mongoose.model('Users', User);
 //shopModel = mongoose.model('Shop', Shop);
-
-	
