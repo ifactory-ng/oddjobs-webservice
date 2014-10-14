@@ -45,8 +45,6 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded());
 app.use(cookieParser());
 app.use(session({ secret: 'odd', cookie: { maxAge: 60000 }}));
-app.use(passport.initialize());
-app.use(passport.session());
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(function (req, res, next) {
         res.setHeader('Access-Control-Allow-Origin', '*');
@@ -111,32 +109,14 @@ email: profile.email,
 });
 //profile section
 app.get('/profile/:user_id?', function(req, res){
-	if(req.user){
-		res.json(200, req.user);
-		
-	}
-	else{
-Users.findById(req.session.passport.user, function(err, user){
-		if(err) {
-			console.log(err);
-			res.send(500);
-		}
-		return res.json(200, user);
-	});
-}
+	
+		return res.json(200, req.user);
 });
+
+
 /*app.get('/test', function(req, res){
 	console.log(req.query.test);
 });*/
-app.get('/auth/google', passport.authenticate('google'));
-
-// Google will redirect the user to this URL after authentication.  Finish
-// the process by verifying the assertion.  If valid, the user will be
-// logged in.  Otherwise, authentication has failed.
-app.get('/auth/google/return',
-  passport.authenticate('google', { successRedirect: '/',
-                                    failureRedirect: '/login' }));
-                                    
 //app.get('/profile/:id', api.user);
 
 

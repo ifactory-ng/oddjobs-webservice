@@ -4,7 +4,7 @@ var schema = require('../conf/schema');
 var user = schema.userModel;
 var mongoose = require('mongoose');
 var Product = schema.productModel;
-var switcher = require('../conf/my_middle');
+//var switcher = require('../conf/my_middle');
 
 
 
@@ -35,7 +35,7 @@ router.param('user_id', function(req, res, next, id){
 	}
 };*/
 
-router.put('/profile/update/about/:user_id?', switcher, function(req, res){
+router.put('/profile/update/about/:user_id?',   function(req, res){
 	var obj = req.body.about;
 console.log(obj);
 console.log(req.user);
@@ -50,7 +50,7 @@ console.log(req.user);
 	});
 });
 
-router.post('/profile/create/shop/:user_id?', switcher, function(req, res){
+router.post('/profile/create/shop/:user_id?',   function(req, res){
 	user.update({_id: req.user}, {
 		"shop_name": req.body.shopName}, function(err, obj){
 		if(err){
@@ -62,7 +62,7 @@ router.post('/profile/create/shop/:user_id?', switcher, function(req, res){
 	});
 	});
 
-router.post('/profile/Product/:user_id?', switcher, function(req, res){
+router.post('/profile/Product/:user_id?',   function(req, res){
 	var products = new Product({
 	"tag_name": req.body.tag,
 	"description": req.body.desc,
@@ -79,7 +79,7 @@ router.post('/profile/Product/:user_id?', switcher, function(req, res){
 	});
 });
 
-router.put('/profile/edit/contact_info/:user_id?', switcher, function(req, res){
+router.put('/profile/edit/contact_info/:user_id?',   function(req, res){
 	
 req.user.update({"_id":req.user}, {$push:{ "contacts_info":req.body.contact_info}}, function(err, data){
 	if(err){
@@ -104,7 +104,7 @@ router.post('/public/:product_id/comment', function(req, res){
 		});
 	});
 	
-	router.get('/profile/products/:user_id?', switcher, function(req, res){
+	router.get('/profile/products/:user_id?',   function(req, res){
 		Product.find({user_id:req.user}, function(err, result){
 			if(err){
 				console.log(err);
