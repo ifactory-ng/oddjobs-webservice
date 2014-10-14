@@ -13,7 +13,6 @@ var route = require('./routes/users');
 var search = require('./routes/search');
 var mongoose = require('mongoose');
 var session = require('express-session');
-
 var Users = schema.userModel;
 /*var Users = mongoose.model('Users', {
   oauthID: Number,
