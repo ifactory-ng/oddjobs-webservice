@@ -40,7 +40,7 @@ router.put('/profile/update/about/:user_id?',   function(req, res){
 console.log(obj);
 console.log(req.user);
 	user.update({_id:req.user}, {
-		about: obj
+		"about": obj
 	}, function(err, obj){
 		if(err){
 			console.log("bad credentials");

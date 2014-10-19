@@ -81,7 +81,7 @@ app.param('user_id', function(req, res, next, id){
 });
 app.get('/authenticate', function(req, res){
 	var profile = req.body;
-Users.findOne({ email: req.body.email }, function(err, user) {
+Users.findOne({ authId: profile.userID }, function(err, user) {
 if(err) { console.log(err); }
 if (!err && user !== null) {
   return res.send(200);
