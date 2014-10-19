@@ -37,11 +37,12 @@ router.param('user_id', function(req, res, next, id){
 
 router.put('/profile/update/about/:user_id?',   function(req, res, next){
 	var obj = req.body.about;
-	console.log(req.body.user);
+	console.log(req.body[0]);
+	console.log(req.body.User);
 console.log("the" + obj);
 console.log(req.user);
 	user.findByIdAndUpdate(req.user, {
-		"about": obj }, function(err, obj){
+		"about": req.body.User.about }, function(err, obj){
 		if(err){
 			console.log("bad credentials");
 		next(err);
