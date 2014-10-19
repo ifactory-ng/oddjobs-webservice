@@ -37,6 +37,7 @@ router.param('user_id', function(req, res, next, id){
 
 router.put('/profile/update/about/:user_id?',   function(req, res, next){
 	var obj = req.body.about;
+	console.log(req.body);
 console.log("the" + obj);
 console.log(req.user);
 	user.findByIdAndUpdate(req.user, {
