@@ -68,7 +68,7 @@ var User = new Schema({
 });
 
 //Product.plugin(elmongo);
-Product.plugin(elmongo, { host: process.env.SEARCHBOX_URL});
+Product.plugin(elmongo);
 var products = mongoose.model('Products', Product);
 
 products.sync(function (err, numSynced){
