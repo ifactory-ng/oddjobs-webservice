@@ -2,7 +2,7 @@ var mongoose = require('mongoose');
 var mongodbURL = process.env.MONGOLAB_URI || process.env.MONGOHQ_URL || 'mongodb://localhost/oddjobs';
 var mongodbOptions = {};
 var db = mongoose.connection;
-var connectionString = process.env.SEARCHBOX_URL;
+var connectionString = "http://paas:52422704d70bce398fc652bdb0d321d9@bofur-us-east-1.searchly.com";
 db.on('error', console.error);
 var elmongo = require('elmongo');
 var Schema = mongoose.Schema;
@@ -70,7 +70,7 @@ var User = new Schema({
 });
 
 //Product.plugin(elmongo);
-Product.plugin(elmongo, {host: connectionString});
+Product.plugin(elmongo, {host: connectionString, port:process.env.PORT});
 var products = mongoose.model('Products', Product);
 
 products.sync(function (err, numSynced){
