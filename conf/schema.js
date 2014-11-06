@@ -2,6 +2,7 @@ var mongoose = require('mongoose');
 var mongodbURL = process.env.MONGOLAB_URI || process.env.MONGOHQ_URL || 'mongodb://localhost/oddjobs';
 var mongodbOptions = {};
 var db = mongoose.connection;
+var connectionString = process.env.SEARCHBOX_URL;
 db.on('error', console.error);
 var elmongo = require('elmongo');
 var Schema = mongoose.Schema;
@@ -36,7 +37,8 @@ var User = new Schema({
 	contacts: [Contacts],
 	created: Number,
 	shop_name: String,
-	contact_info: Number
+	contact_info: Number,
+	location: String
 	});
 	
 	/*var Product = mongoose.model('Products',{
@@ -68,7 +70,7 @@ var User = new Schema({
 });
 
 //Product.plugin(elmongo);
-Product.plugin(elmongo);
+Product.plugin(elmongo, {host: connectionString});
 var products = mongoose.model('Products', Product);
 
 products.sync(function (err, numSynced){
