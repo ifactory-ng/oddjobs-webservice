@@ -71,13 +71,23 @@ router.post('/profile/Product/:user_id?',   function(req, res){
 "price": req.body.price,
 "user_id": req.user
 	});
+	 
 	products.save(function(err){
 		if(err){
 			console.log(err);
 			return res.send(500);
 		}
+	
+		client.create({index: "products", type: 'mytype',
+  id: products._id,
+  body: products
+}, function (error, response) {
+  // ...
+  
+});
 		return res.json(200, products);
 	});
+	
 });
 
 router.put('/profile/edit/contact_info/:user_id?',   function(req, res){

@@ -13,7 +13,28 @@ var route = require('./routes/users');
 var search = require('./routes/search');
 var mongoose = require('mongoose');
 var session = require('express-session');
+var es = require('elasticsearch');
 var Users = schema.userModel;
+
+var connectionString = 'https://site:your-key@xyz.searchly.com';
+
+if (process.env.SEARCHBOX_URL) {
+    // Heroku
+    connectionString = process.env.SEARCHBOX_URL;
+} else if (process.env.SEARCHBOX_URL) {
+    // CloudControl, Modulus
+    connectionString = process.env.SEARCHLY_URL;
+} else if (process.env.VCAP_SERVICES) {
+    // Pivotal, Openshift
+    connectionString = JSON.parse(process.env.VCAP_SERVICES)['searchly-n/a'][0]['credentials']['uri'];
+}
+
+console.info(connectionString);
+
+var client = new es.Client({
+    host: connectionString
+});
+
 /*var Users = mongoose.model('Users', {
   oauthID: Number,
   name: String,
@@ -79,7 +100,9 @@ app.param('user_id', function(req, res, next, id){
 		next();
 	});
 });
-app.get('/authenticate', function(req, res){
+
+app.post('/authenticate', function(req, res){
+	var users = '';
 	var profile = req.body;
 Users.findOne({ authId: profile.userID }, function(err, user) {
 if(err) { console.log(err); }
@@ -87,14 +110,20 @@ if (!err && user !== null) {
   return res.send(200);
 } else {
  
-  var users = new Users({
+   users = new Users({
   	authId: req.body.userID,
-email: profile.email,
+	  email: profile.email,
 	 name: profile.name,
 	 created: Date.now()
 });
 	 
- users.save(function(err, User) {
+	 client.create({index: "user", type: 'mytype',
+  id: profile.userID,
+  body: users
+}, function (error, response) {
+  // ...
+  
+}); users.save(function(err, User) {
     if(err) {
      return console.log(err);
     } else {
@@ -154,5 +183,5 @@ app.use(function(err, req, res, next) {
     });
 });
 
-app.listen(process.env.PORT || 3000);
+//app.listen(process.env.PORT || 3000);
 module.exports = app;
