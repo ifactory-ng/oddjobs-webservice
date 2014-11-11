@@ -117,7 +117,7 @@ if (!err && user !== null) {
 	 created: Date.now()
 });
 	 
-	 client.create({index: "user", type: 'mytype',
+	 client.create({index: "user", type: 'document',
   id: profile.userID,
   body: users
 }, function (error, response) {

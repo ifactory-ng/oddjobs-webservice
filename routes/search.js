@@ -3,20 +3,31 @@ var router = express.Router();
 var schema = require('../conf/schema');
 var User = schema.userModel;
 var mongoose = require('mongoose');
-var Product = schema.productModel;
+var elasticsearch = require('elasticsearch');
+var connectionString = 'https://site:your-key@xyz.searchly.com';
 
+if (process.env.SEARCHBOX_URL) {
+    // Heroku
+    connectionString = process.env.SEARCHBOX_URL;
+} else if (process.env.SEARCHBOX_URL) {
+    // CloudControl, Modulus
+    connectionString = process.env.SEARCHLY_URL;
+}
+
+var client = new elasticsearch.Client({
+    host: connectionString
+});
 
 
 router.get('/search', function(req, res){
-	Product.search({ query: req.query.q, fuzziness: 0.5}, function(err, results){
-	 client.search({
-        index: user,
-        type: mytype,
+client.search({
+	      index: _choice,
+	      type:'document',
         body: {
             "query": {
                 "multi_match": {
                     "query": req.query.q,
-                    "fields": [ "name", "text" ]
+                    "fields": [ "name", "about", "location" ]
                 }
             }
         }
@@ -26,7 +37,6 @@ router.get('/search', function(req, res){
     }, function (err) {
         console.trace(err.message);
         res.render('search', { result: err.message });
-    });
-});
+  });
 });
 module.exports = router;

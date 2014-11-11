@@ -5,6 +5,25 @@ var user = schema.userModel;
 var mongoose = require('mongoose');
 var Product = schema.productModel;
 //var switcher = require('../conf/my_middle');
+var es = require('elasticsearch');
+var connectionString = 'https://site:your-key@xyz.searchly.com';
+
+if (process.env.SEARCHBOX_URL) {
+    // Heroku
+    connectionString = process.env.SEARCHBOX_URL;
+} else if (process.env.SEARCHBOX_URL) {
+    // CloudControl, Modulus
+    connectionString = process.env.SEARCHLY_URL;
+} else if (process.env.VCAP_SERVICES) {
+    // Pivotal, Openshift
+    connectionString = JSON.parse(process.env.VCAP_SERVICES)['searchly-n/a'][0]['credentials']['uri'];
+}
+
+console.info(connectionString);
+
+var client = new es.Client({
+    host: connectionString
+});
 
 
 
@@ -78,7 +97,7 @@ router.post('/profile/Product/:user_id?',   function(req, res){
 			return res.send(500);
 		}
 	
-		client.create({index: "products", type: 'mytype',
+		client.create({index: "products", type: 'document',
   id: products._id,
   body: products
 }, function (error, response) {
