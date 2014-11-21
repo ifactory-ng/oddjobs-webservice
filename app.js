@@ -26,7 +26,7 @@ if (process.env.SEARCHBOX_URL) {
     connectionString = process.env.SEARCHLY_URL;
 } else if (process.env.VCAP_SERVICES) {
     // Pivotal, Openshift
-    connectionString = JSON.parse(process.env.VCAP_SERVICES)['searchly-n/a'][0].credentials.uri;
+    connectionString = JSON.parse(process.env.VCAP_SERVICES)['searchly-n/a'][0]['credentials']['uri'];
 }
 
 console.info(connectionString);

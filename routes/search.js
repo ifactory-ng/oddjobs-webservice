@@ -33,10 +33,10 @@ client.search({
         }
     }).then(function (resp) {
         var hits = resp.hits.hits;
-       return res.json( hits);
+       return res.json(hits);
     }, function (err) {
         console.trace(err.message);
-        res.send(500, err.message);
+        return res.send(500);
   });
 });
 module.exports = router;
