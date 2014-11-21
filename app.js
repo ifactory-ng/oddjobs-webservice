@@ -11,7 +11,7 @@ var api = require('./routes/users');
 var config = require('./conf/auth');
 var routes = require('./routes/index');
 var route = require('./routes/users');
-var search = require('./routes/search');
+//var search = require('./routes/search');
 var mongoose = require('mongoose');
 var session = require('express-session');
 var es = require('elasticsearch');
@@ -71,7 +71,7 @@ app.use(function (req, res, next) {
 //routing
 app.use('/', routes);
 app.use('/', route);
-app.use('/', search);
+//app.use('/', search);
 
 
 /*passport.serializeUser(function(user, done) {
@@ -134,6 +134,27 @@ app.get('/profile/:user_id?', function(req, res){
 		return res.json(200, req.user);
 });
 
+
+app.get('/search', function(req, res){
+client.search({
+	      index: 'search_item',
+	      type:'document',
+        body: {
+            "query": {
+                "multi_match": {
+                    "query": req.query.q,
+                    "fields": [ "name", "about", "location", "tag_name", "description", "category"]
+                }
+            }
+        }
+    }).then(function (resp) {
+        var hits = resp.hits.hits;
+       res.json(hits);
+    }, function (err) {
+        console.trace(err.message);
+       res.send(500);
+  });
+});
 
 /*app.get('/test', function(req, res){
 	console.log(req.query.test);
