@@ -21,22 +21,22 @@ var client = new elasticsearch.Client({
 
 router.get('/search', function(req, res){
 client.search({
-	      index: _choice,
+	      index: 'search_item',
 	      type:'document',
         body: {
             "query": {
                 "multi_match": {
                     "query": req.query.q,
-                    "fields": [ "name", "about", "location" ]
+                    "fields": [ "name", "about", "location", "tag_name", "description", "category"]
                 }
             }
         }
     }).then(function (resp) {
         var hits = resp.hits.hits;
-        res.render('search', { result: hits});
+       return res.json( hits);
     }, function (err) {
         console.trace(err.message);
-        res.render('search', { result: err.message });
+        res.send(500, err.message);
   });
 });
 module.exports = router;

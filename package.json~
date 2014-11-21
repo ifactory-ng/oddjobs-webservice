@@ -16,6 +16,7 @@
     "jade": "~1.3.0",
     "express-session": "^1.7.4",
     "elmongo": "^0.1.9",
+    "elasticsearch": "^2.4.3",
     "blueimp-file-upload-expressjs": "^0.2.10"
   },
   "description": "api for oddjobs clients",

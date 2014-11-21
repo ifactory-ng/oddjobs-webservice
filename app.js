@@ -26,7 +26,7 @@ if (process.env.SEARCHBOX_URL) {
     connectionString = process.env.SEARCHLY_URL;
 } else if (process.env.VCAP_SERVICES) {
     // Pivotal, Openshift
-    connectionString = JSON.parse(process.env.VCAP_SERVICES)['searchly-n/a'][0]['credentials']['uri'];
+    connectionString = JSON.parse(process.env.VCAP_SERVICES)['searchly-n/a'][0].credentials.uri;
 }
 
 console.info(connectionString);
@@ -117,7 +117,7 @@ if (!err && user !== null) {
 	 created: Date.now()
 });
 	 
-	 client.create({index: "user", type: 'document',
+	 client.create({index: "search_item", type: 'document',
   id: profile.userID,
   body: users
 }, function (error, response) {

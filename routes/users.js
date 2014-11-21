@@ -97,7 +97,7 @@ router.post('/profile/Product/:user_id?',   function(req, res){
 			return res.send(500);
 		}
 	
-		client.create({index: "products", type: 'document',
+		client.create({index: "search_items", type: 'document',
   id: products._id,
   body: products
 }, function (error, response) {
@@ -154,5 +154,14 @@ router.post('/public/:product_id/comment', function(req, res){
 		});
 	});
 
-
+router.get('/profile/:prooduct_id/comment', function(req, res){
+	Product.findOne({product_id: req.params.product_id}, function(err, result){
+		if(err){
+			console.log(err);
+		return res.send(500);
+			
+		}
+		return res.json(200, result);
+	});
+});
 module.exports = router;
