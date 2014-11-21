@@ -1,22 +1,17 @@
 var express = require('express');
 var router = express.Router();
 var schema = require('../conf/schema');
+var config = require('../conf/auth');
 var user = schema.userModel;
 var mongoose = require('mongoose');
 var Product = schema.productModel;
 //var switcher = require('../conf/my_middle');
 var es = require('elasticsearch');
-var connectionString = 'https://site:your-key@xyz.searchly.com';
+var connectionString = 'http://paas:52422704d70bce398fc652bdb0d321d9@bofur-us-east-1.searchly.com';
 
 if (process.env.SEARCHBOX_URL) {
     // Heroku
     connectionString = process.env.SEARCHBOX_URL;
-} else if (process.env.SEARCHBOX_URL) {
-    // CloudControl, Modulus
-    connectionString = process.env.SEARCHLY_URL;
-} else if (process.env.VCAP_SERVICES) {
-    // Pivotal, Openshift
-    connectionString = JSON.parse(process.env.VCAP_SERVICES)['searchly-n/a'][0]['credentials']['uri'];
 }
 
 console.info(connectionString);

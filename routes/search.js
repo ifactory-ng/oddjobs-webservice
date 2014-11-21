@@ -1,17 +1,15 @@
 var express = require('express');
 var router = express.Router();
 var schema = require('../conf/schema');
+var config = require('../conf/auth');
 var User = schema.userModel;
 var mongoose = require('mongoose');
 var elasticsearch = require('elasticsearch');
-var connectionString = 'https://site:your-key@xyz.searchly.com';
+var connectionString = 'http://paas:52422704d70bce398fc652bdb0d321d9@bofur-us-east-1.searchly.com';
 
 if (process.env.SEARCHBOX_URL) {
     // Heroku
     connectionString = process.env.SEARCHBOX_URL;
-} else if (process.env.SEARCHBOX_URL) {
-    // CloudControl, Modulus
-    connectionString = process.env.SEARCHLY_URL;
 }
 
 var client = new elasticsearch.Client({

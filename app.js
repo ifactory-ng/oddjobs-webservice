@@ -5,6 +5,7 @@ var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 var schema = require('./conf/schema');
+var schema = require('./conf/auth');
 //var routes = require('./routes/index');
 var api = require('./routes/users');
 var config = require('./conf/auth');
@@ -16,19 +17,12 @@ var session = require('express-session');
 var es = require('elasticsearch');
 var Users = schema.userModel;
 
-var connectionString = 'https://site:your-key@xyz.searchly.com';
+var connectionString = 'localhost:9201';
 
 if (process.env.SEARCHBOX_URL) {
     // Heroku
     connectionString = process.env.SEARCHBOX_URL;
-} else if (process.env.SEARCHBOX_URL) {
-    // CloudControl, Modulus
-    connectionString = process.env.SEARCHLY_URL;
-} else if (process.env.VCAP_SERVICES) {
-    // Pivotal, Openshift
-    connectionString = JSON.parse(process.env.VCAP_SERVICES)['searchly-n/a'][0]['credentials']['uri'];
 }
-
 console.info(connectionString);
 
 var client = new es.Client({
