@@ -17,7 +17,7 @@ var session = require('express-session');
 var es = require('elasticsearch');
 var Users = schema.userModel;
 
-var connectionString = 'localhost:9201';
+var connectionString = 'http://paas:52422704d70bce398fc652bdb0d321d9@bofur-us-east-1.searchly.com';
 
 if (process.env.SEARCHBOX_URL) {
     // Heroku
