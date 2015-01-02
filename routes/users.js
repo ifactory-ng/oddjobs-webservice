@@ -99,7 +99,7 @@ if (!err && user !== null) {
 });
 	 
 	 client.create({index: "search_item", type: 'document',
-  id: profile.userID,
+  id: profile.id,
   body: users
 }, function (error, response) {
   // ...
