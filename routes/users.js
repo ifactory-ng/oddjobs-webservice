@@ -80,6 +80,46 @@ console.log(req.user);
 	});
 */
 
+app.post('/profile/authenticate', function(req, res){
+	var users = '';
+	var profile = req.body;
+Users.findOne({ authId: profile.userID }, function(err, user) {
+if(err) { console.log(err); }
+if (!err && user !== null) {
+  return res.send(200);
+} else {
+ 
+   users = new Users({
+  	authId: req.body.userID,
+	  email: profile.email,
+	 name: profile.name,
+	 created: Date.now()
+});
+	 
+	 client.create({index: "search_item", type: 'document',
+  id: profile.userID,
+  body: users
+}, function (error, response) {
+  // ...
+  
+}); users.save(function(err, User) {
+    if(err) {
+     return console.log(err);
+    } else {
+      console.log("saving user ...");
+      return res.send(200);
+    	
+    }
+  });
+}
+});
+});
+//profile section
+app.get('/profile/:user_id?', function(req, res){
+	
+		return res.json(200, req.user);
+});
+
 router.post('/profile/Product/:user_id?',   function(req, res){
 	var products = new Product({
 	"tag_name": req.body.tag,
