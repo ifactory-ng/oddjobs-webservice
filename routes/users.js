@@ -12,9 +12,11 @@ var connectionString = 'http://paas:52422704d70bce398fc652bdb0d321d9@bofur-us-ea
 if (process.env.SEARCHBOX_URL) {
     // Heroku
     connectionString = process.env.SEARCHBOX_URL;
+		console.info(connectionString);
+	
 }
 
-console.info(connectionString);
+
 
 var client = new es.Client({
     host: connectionString
@@ -56,7 +58,7 @@ router.put('/profile/update/details/:user_id?',   function(req, res, next){
 console.log("the" + obj);
 console.log(req.user);
 	user.findByIdAndUpdate(req.user, {
-		"about": obj.about, "name": obj.name, "email": obj.email, "contact_info": obj.number, "location": obj.locale}, function(err, obj){
+		"about": obj.about, "name": obj.name, "address": obj.address, "email": obj.email, "phone": obj.phone, "location": obj.location}, function(err, obj){
 		if(err){
 			console.log("bad credentials");
 		next(err);
@@ -65,7 +67,7 @@ console.log(req.user);
 	});
 });
 
-router.post('/profile/create/shop/:user_id?',   function(req, res){
+/*router.post('/profile/create/shop/:user_id?',   function(req, res){
 	user.update({_id: req.user}, {
 		"shop_name": req.body.shopName}, function(err, obj){
 		if(err){
@@ -76,6 +78,7 @@ router.post('/profile/create/shop/:user_id?',   function(req, res){
 		return res.json(200, obj);
 	});
 	});
+*/
 
 router.post('/profile/Product/:user_id?',   function(req, res){
 	var products = new Product({

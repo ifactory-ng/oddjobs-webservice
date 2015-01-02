@@ -22,8 +22,10 @@ var connectionString = 'http://paas:52422704d70bce398fc652bdb0d321d9@bofur-us-ea
 if (process.env.SEARCHBOX_URL) {
     // Heroku
     connectionString = process.env.SEARCHBOX_URL;
+
+	console.info(connectionString);
 }
-console.info(connectionString);
+
 
 var client = new es.Client({
     host: connectionString

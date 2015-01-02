@@ -34,10 +34,10 @@ var User = new Schema({
 	email: String,
 	name: String,
 	about: String,
-	contacts: [Contacts],
+	//contacts: [Contacts],
 	created: Number,
-	shop_name: String,
-	contact_info: Number,
+	address: String,
+	phone: Number,
 	location: String
 	});
 	
