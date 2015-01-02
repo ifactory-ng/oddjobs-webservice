@@ -83,16 +83,18 @@ console.log(req.user);
 router.post('/profile/authenticate', function(req, res){
 	var users = '';
 	var profile = req.body;
-Users.findOne({ authId: profile.userID }, function(err, user) {
+	console.log(profile);
+Users.findOne({ authId: profile.id }, function(err, user) {
 if(err) { console.log(err); }
 if (!err && user !== null) {
   return res.send(200);
 } else {
  
    users = new Users({
-  	authId: req.body.userID,
+  	authId: req.body.id,
 	  email: profile.email,
 	 name: profile.name,
+	 gender: profile.gender,
 	 created: Date.now()
 });
 	 
