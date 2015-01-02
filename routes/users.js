@@ -35,13 +35,6 @@ var client = new es.Client({
 	
 };*/
 
-router.param('user_id', function(req, res, next, id){
-	user.findOne({authId: id}, function(err, user){
-		if(err) {return next(err);}
-		req.user = user._id;
-		next();
-	});
-});
 /*var id = function switcher(){
 	if(req.session.passport.req.user){
 		return req.session.passport.req.user;
@@ -50,6 +43,37 @@ router.param('user_id', function(req, res, next, id){
 		return req.req.user._id;
 	}
 };*/
+
+router.post('/profile/authenticate', function(req, res){
+	//var users = '';
+	var profile = req.body;
+	console.log(profile);
+	user.find({ authId: profile.id }, function(err, user) {
+if(err) { console.log(err); }
+if (!err && user !== null) {
+  return res.send(200);
+} else {
+ 
+   var users = new user({
+  	authId: req.body.id,
+	  email: profile.email,
+	 name: profile.name,
+	 gender: profile.gender,
+	 created: Date.now()
+});
+ users.save(function(err, User) {
+    if(err) {
+     return console.log(err);
+    } else {
+      console.log("saving user ...");
+      return res.send(200);
+    	
+    }
+  });
+}
+});
+});
+
 
 router.put('/profile/update/details/:user_id?',   function(req, res, next){
 	var obj = req.body;
@@ -80,35 +104,7 @@ console.log(req.user);
 	});
 */
 
-router.post('/profile/authenticate', function(req, res){
-	var users = '';
-	var profile = req.body;
-	console.log(profile);
-Users.findOne({ authId: profile.id }, function(err, user) {
-if(err) { console.log(err); }
-if (!err && user !== null) {
-  return res.send(200);
-} else {
- 
-   users = new Users({
-  	authId: req.body.id,
-	  email: profile.email,
-	 name: profile.name,
-	 gender: profile.gender,
-	 created: Date.now()
-});
- users.save(function(err, User) {
-    if(err) {
-     return console.log(err);
-    } else {
-      console.log("saving user ...");
-      return res.send(200);
-    	
-    }
-  });
-}
-});
-});
+
 //profile section
 router.get('/profile/:user_id?', function(req, res){
 	
@@ -144,7 +140,7 @@ router.post('/profile/Product/:user_id?',   function(req, res){
 
 router.put('/profile/edit/contact_info/:user_id?',   function(req, res){
 	
-req.user.update({"_id":req.user}, {$push:{ "contacts_info":req.body.contact_info}}, function(err, data){
+router.update({"_id":req.user}, {$push:{ "contacts_info":req.body.contact_info}}, function(err, data){
 	if(err){
 		console.log(err);
 		return res.send(500);

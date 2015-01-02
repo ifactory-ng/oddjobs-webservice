@@ -78,7 +78,8 @@ var products = mongoose.model('Products', Product);
 	console.log('number of search items indexed:', numSynced);
 });
 */
+var user = mongoose.model('Users', User);
 exports.productModel = products;
 //var Search = mongoose.model('elastic', Search);
-exports.userModel = mongoose.model('Users', User);
+exports.userModel = user;
 //shopModel = mongoose.model('Shop', Shop);

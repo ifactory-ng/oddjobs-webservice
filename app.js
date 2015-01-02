@@ -16,7 +16,7 @@ var cors = require('cors');
 var mongoose = require('mongoose');
 var session = require('express-session');
 var es = require('elasticsearch');
-var Users = schema.userModel;
+var users = schema.userModel;
 
 var connectionString = 'http://paas:52422704d70bce398fc652bdb0d321d9@bofur-us-east-1.searchly.com';
 
@@ -32,12 +32,8 @@ var client = new es.Client({
     host: connectionString
 });
 
-/*var Users = mongoose.model('Users', {
-  oauthID: Number,
-  name: String,
-  email: String
-});
-*/
+
+
 
 // config
 /*passport.use(new FacebookStrategy({
@@ -80,14 +76,6 @@ passport.deserializeUser(function(id, done) {
  });
 });
 */
-
-app.param('user_id', function(req, res, next, id){
-	Users.findOne({authId: id}, function(err, user){
-		if(err) {return next(err);}
-		req.user = user;
-		next();
-	});
-});
 
 
 
