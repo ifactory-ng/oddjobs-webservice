@@ -12,6 +12,7 @@ var config = require('./conf/auth');
 var routes = require('./routes/index');
 var route = require('./routes/users');
 //var search = require('./routes/search');
+var cors = require('cors');
 var mongoose = require('mongoose');
 var session = require('express-session');
 var es = require('elasticsearch');
@@ -60,16 +61,8 @@ app.use(logger('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded());
 app.use(cookieParser());
+app.use(cors());
 app.use(express.static(path.join(__dirname, 'public')));
-app.use(function (req, res, next) {
-        res.setHeader('Access-Control-Allow-Origin', '*');
-				 res.setHeader('Access-Control-Allow-Credentials', true);
-        res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE');
-        res.setHeader('Access-Control-Allow-Headers', 'X-Requested-With,content-type');
-        next();
-    }
-);
-
 //routing
 app.use('/', routes);
 app.use('/', route);
