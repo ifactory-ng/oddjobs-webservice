@@ -22,7 +22,13 @@ var client = new es.Client({
     host: connectionString
 });
 
-
+router.param('user_id', function(req, res, next, id){
+	user.findOne({authId: id}, function(err, user){
+		if(err) {return next(err);}
+		req.user = user;
+		next();
+	});
+});
 
 /*exports.req.user = function(req, res){
 	var id = req.params.id;
@@ -81,34 +87,30 @@ router.put('/profile/update/details/:user_id?',   function(req, res, next){
 	console.log(req.body.User);
 console.log("the" + obj);
 console.log(req.user);
-	user.findByIdAndUpdate(req.user, {
-		"about": obj.about, "name": obj.name, "address": obj.address, "email": obj.email, "phone": obj.phone, "location": obj.location}, function(err, obj){
+
+
+
+	user.findByIdAndUpdate(req.user.authId, {
+		"about": obj.about, "address": obj.address, "phone": obj.phone, "location": obj.location}, function(err, obj){
 		if(err){
 			console.log("bad credentials");
 		next(err);
 			}
-	return res.json(200, obj);
-	});
+			client.indices.create({index: "search_item"}, function (error, response) {
+        client.bulk({
+            body: [
+                // action description
+                { "index": { "_index": "search_item", "_type": "document", "_id": req.user.id} },
+                {'about': obj.about, 'address': obj.address, 'phone': obj.phone, 'location': obj.location}
+            ]
+        }, function (err, resp) {
+            return res.send(200);
+        });
+    });
 });
-
-/*router.post('/profile/create/shop/:user_id?',   function(req, res){
-	user.update({_id: req.user}, {
-		"shop_name": req.body.shopName}, function(err, obj){
-		if(err){
-			console.log("bad credentials");
-		next(err);
-			
-		}
-		return res.json(200, obj);
 	});
-	});
-*/
-
-
-//profile section
 router.get('/profile/:user_id?', function(req, res){
-	
-		return res.json(200, req.user);
+	return res.json(200, req.user);
 });
 
 router.post('/profile/Product/:user_id?',   function(req, res){
@@ -117,19 +119,19 @@ router.post('/profile/Product/:user_id?',   function(req, res){
 	"description": req.body.desc,
 	"category": req.body.category,
 "price": req.body.price,
-"user_id": req.user
+"user_id": req.user.authId
 	});
 	 
-	products.save(function(err){
+	products.save(function(err, data){
 		if(err){
 			console.log(err);
 			return res.send(500);
 		}
-	
-		client.create({index: "search_items", type: 'document',
-  id: products._id,
-  body: products
-}, function (error, response) {
+	client.indices.create({index: "search_items"}, function (error, response){
+client.bulk({body: [
+                { "index": { "_index": "search_item", "_type": "document", "_id": data._id} },
+                {'tag_name': req.body.tag, 'description': req.body.desc, 'category': req.body.category}
+]});
   // ...
   
 });
@@ -140,7 +142,7 @@ router.post('/profile/Product/:user_id?',   function(req, res){
 
 router.put('/profile/edit/contact_info/:user_id?',   function(req, res){
 	
-router.update({"_id":req.user}, {$push:{ "contacts_info":req.body.contact_info}}, function(err, data){
+router.update({"_id":req.user.authId}, {$push:{ "contacts_info":req.body.contact_info}}, function(err, data){
 	if(err){
 		console.log(err);
 		return res.send(500);
@@ -164,7 +166,7 @@ router.post('/public/:product_id/comment', function(req, res){
 	});
 	
 	router.get('/profile/products/:user_id?',   function(req, res){
-		Product.find({user_id:req.user}, function(err, result){
+		Product.find({user_id:req.user.authId}, function(err, result){
 			if(err){
 				console.log(err);
 				res.send(500);
