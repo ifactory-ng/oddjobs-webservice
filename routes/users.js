@@ -80,7 +80,7 @@ console.log(req.user);
 	});
 */
 
-app.post('/profile/authenticate', function(req, res){
+router.post('/profile/authenticate', function(req, res){
 	var users = '';
 	var profile = req.body;
 Users.findOne({ authId: profile.userID }, function(err, user) {
@@ -115,7 +115,7 @@ if (!err && user !== null) {
 });
 });
 //profile section
-app.get('/profile/:user_id?', function(req, res){
+router.get('/profile/:user_id?', function(req, res){
 	
 		return res.json(200, req.user);
 });
