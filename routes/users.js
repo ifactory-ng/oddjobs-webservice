@@ -97,14 +97,7 @@ if (!err && user !== null) {
 	 gender: profile.gender,
 	 created: Date.now()
 });
-	 
-	 client.create({index: "search_item", type: 'document',
-  id: profile.id,
-  body: users
-}, function (error, response) {
-  // ...
-  
-}); users.save(function(err, User) {
+ users.save(function(err, User) {
     if(err) {
      return console.log(err);
     } else {
