@@ -90,7 +90,7 @@ console.log(req.user);
 
 
 
-	user.findByIdAndUpdate(req.user.authId, {
+	user.findByIdAndUpdate(req.user._id, {
 		"about": obj.about, "address": obj.address, "phone": obj.phone, "location": obj.location}, function(err, obj){
 		if(err){
 			console.log("bad credentials");
@@ -119,7 +119,10 @@ router.post('/profile/Product/:user_id?',   function(req, res){
 	"description": req.body.desc,
 	"category": req.body.category,
 "price": req.body.price,
-"user_id": req.user.authId
+"user_id": req.user.authId,
+"name" : req.user.name,
+"location" : req.body.location,
+"address": req.body.address
 	});
 	 
 	products.save(function(err, data){
@@ -140,16 +143,6 @@ client.bulk({body: [
 	
 });
 
-router.put('/profile/edit/contact_info/:user_id?',   function(req, res){
-	
-router.update({"_id":req.user.authId}, {$push:{ "contacts_info":req.body.contact_info}}, function(err, data){
-	if(err){
-		console.log(err);
-		return res.send(500);
-	}
-return res.json(200,data);
-});
-});
 
 router.post('/public/:product_id/comment', function(req, res){
 	var comment = req.body.comment;
