@@ -7,7 +7,7 @@ var mongoose = require('mongoose');
 var Product = schema.productModel;
 //var switcher = require('../conf/my_middle');
 var es = require('elasticsearch');
-var connectionString = 'http://paas:52422704d70bce398fc652bdb0d321d9@bofur-us-east-1.searchly.com';
+//var connectionString = 'http://paas:52422704d70bce398fc652bdb0d321d9@bofur-us-east-1.searchly.com';
 
 if (process.env.SEARCHBOX_URL) {
     // Heroku
@@ -19,7 +19,7 @@ if (process.env.SEARCHBOX_URL) {
 
 
 var client = new es.Client({
-    host: connectionString
+    host: "9201"
 });
 
 router.param('user_id', function(req, res, next, id){
@@ -83,8 +83,8 @@ if (!err && user !== null) {
 
 router.put('/profile/update/details/:user_id?',   function(req, res, next){
 	var obj = req.body;
-	console.log(req.body[0]);
-	console.log(req.body.User);
+	console.log(req.body.about);
+	console.log(req.body);
 console.log("the" + obj);
 console.log(req.user);
 
@@ -101,7 +101,7 @@ console.log(req.user);
             body: [
                 // action description
                 { "index": { "_index": "search_item", "_type": "document", "_id": req.user.id} },
-                {'about': obj.about, 'address': obj.address, 'phone': obj.phone, 'location': obj.location}
+                {'about': req.body.about, 'address': req.body.address, 'phone': req.body.phone, 'location': req.body.location}
             ]
         }, function (err, resp) {
             return res.send(200);
