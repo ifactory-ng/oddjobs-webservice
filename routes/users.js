@@ -80,15 +80,10 @@ if (!err && user !== null) {
 });
 });
 
-
 router.put('/profile/update/details/:user_id?',   function(req, res, next){
 	var obj = req.body;
 //	console.log(req.body.about);
 	console.log(req.body);
-
-
-
-
 	user.findByIdAndUpdate(req.user._id, {
 		"about": obj.about, "address": obj.address, "phone": obj.phone, "location": obj.location}, function(err, obj){
 		if(err){
@@ -113,11 +108,11 @@ router.get('/profile/:user_id?', function(req, res){
 });
 
 router.post('/profile/Product/:user_id?',   function(req, res){
+	console.log(req.body);
 	var products = new Product({
 	"tag_name": req.body.tag,
 	"description": req.body.desc,
 	"category": req.body.category,
-"price": req.body.price,
 "user_id": req.user.authId,
 "name" : req.user.name,
 "location" : req.body.location,

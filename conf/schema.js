@@ -61,10 +61,10 @@ var User = new Schema({
 		description: {type: String},
 		category: {type: String},
 		comments: [Comments],
-		pic: String,
-		cost: Number,
 		product_id: Number,
 		user_id: String,
+		address: String,
+		name: String,
 		location: {type: String},
 		rating: {type: Number}
 });
