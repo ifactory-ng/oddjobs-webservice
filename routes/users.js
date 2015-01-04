@@ -83,10 +83,9 @@ if (!err && user !== null) {
 
 router.put('/profile/update/details/:user_id?',   function(req, res, next){
 	var obj = req.body;
-	console.log(req.body.about);
+//	console.log(req.body.about);
 	console.log(req.body);
-console.log("the" + obj);
-console.log(req.user);
+
 
 
 
