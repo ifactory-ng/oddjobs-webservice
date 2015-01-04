@@ -7,7 +7,7 @@ var mongoose = require('mongoose');
 var Product = schema.productModel;
 //var switcher = require('../conf/my_middle');
 var es = require('elasticsearch');
-//var connectionString = 'http://paas:52422704d70bce398fc652bdb0d321d9@bofur-us-east-1.searchly.com';
+var connectionString = 'http://paas:52422704d70bce398fc652bdb0d321d9@bofur-us-east-1.searchly.com';
 
 if (process.env.SEARCHBOX_URL) {
     // Heroku
@@ -19,7 +19,7 @@ if (process.env.SEARCHBOX_URL) {
 
 
 var client = new es.Client({
-    host: "9201"
+    host: connectionString
 });
 
 router.param('user_id', function(req, res, next, id){
