@@ -64,6 +64,8 @@ var User = new Schema({
 		product_id: Number,
 		user_id: String,
 		address: String,
+       product_name: String,
+        phone: String,
 		name: String,
 		location: {type: String},
 		rating: {type: Number}

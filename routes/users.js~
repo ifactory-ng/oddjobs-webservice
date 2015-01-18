@@ -80,7 +80,7 @@ if (!err && user !== null) {
 });
 });
 
-drouter.put('/profile/update/details/:user_id?',   function(req, res, next){
+router.put('/profile/update/details/:user_id?',   function(req, res, next){
 	var obj = req.body;
 //	console.log(req.body.about);
 	console.log(req.body);
@@ -110,13 +110,11 @@ router.get('/profile/:user_id?', function(req, res){
 router.post('/profile/Product/:user_id?',   function(req, res){
 	console.log(req.body);
 	var products = new Product({
-        "product_name": req.body.p_name,
 	"tag_name": req.body.tag,
 	"description": req.body.desc,
 	"category": req.body.category,
 "user_id": req.user.authId,
 "name" : req.user.name,
-"phone": req.user.phone,
 "location" : req.body.location,
 "address": req.body.address
 	});

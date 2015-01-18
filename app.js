@@ -12,6 +12,7 @@ var config = require('./conf/auth');
 var routes = require('./routes/index');
 var route = require('./routes/users');
 //var search = require('./routes/search');
+var docs = require('express-mongoose-docs');
 var cors = require('cors');
 var mongoose = require('mongoose');
 var session = require('express-session');
@@ -60,6 +61,7 @@ app.use(cookieParser());
 app.use(cors());
 app.use(express.static(path.join(__dirname, 'public')));
 //routing
+docs(app);
 app.use('/', routes);
 app.use('/', route);
 //app.use('/', search);
