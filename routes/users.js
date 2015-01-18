@@ -80,7 +80,7 @@ if (!err && user !== null) {
 });
 });
 
-drouter.put('/profile/update/details/:user_id?',   function(req, res, next){
+router.put('/profile/update/details/:user_id?',   function(req, res, next){
 	var obj = req.body;
 //	console.log(req.body.about);
 	console.log(req.body);
