@@ -142,7 +142,7 @@ client.bulk({body: [
 
 router.post('/public/:product_id/comment', function(req, res){
 	var comment = req.body.comment;
-	Product.update({"product_id": req.params.product_id}, {$push: {"comments": {"name": req.body.name, "email": req.body.email, "comment": req.body.comment, "rating": req.body.rate}}},
+	Product.update({"_id": req.params.product_id}, {$push: {"comments": {"name": req.body.name, "email": req.body.email, "comment": req.body.comment, "rating": req.body.rate}}},
 		function(err, product){
 			if(err){
 				console.log("error updating product");
@@ -165,17 +165,30 @@ router.post('/public/:product_id/comment', function(req, res){
 	});
 	
 	router.get('/profile/product/:product_id', function(req, res){
-		Product.findOne({product_id: req.params.product_id},  function(err, result){
+		Product.findOne({_id: req.params.product_id},  function(err, result){
 			if(err){
 			console.log("error processing report");
 			return res.send(500);
 				}
-				return res.json(200, result);
+				var no_comments = result.comments.length;
+						var rs = {
+						    "tag_name": result.tag_name,
+						    "description": result.description,
+						    "_id": result._id,
+						    "user_id": result.user_id,
+						    "address": result.address,
+						    "product_name": result.product_name,
+						    "phone": result.phone,
+						   "location":result.location,
+						    "rating": result.rating,
+						    "no_comments": no_comments
+						};
+				return res.json(200, rs);
 		});
 	});
 
 router.get('/profile/:prooduct_id/comment', function(req, res){
-	Product.findOne({product_id: req.params.product_id}, function(err, result){
+	Product.findOne({_id: req.params.product_id}, function(err, result){
 		if(err){
 			console.log(err);
 		return res.send(500);

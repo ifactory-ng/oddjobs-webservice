@@ -68,7 +68,7 @@ var User = new Schema({
         phone: String,
 		name: String,
 		location: {type: String},
-		rating: {type: Number}
+		rating: {type: Number, default: 0}
 });
 
 //Product.plugin(elmongo);
